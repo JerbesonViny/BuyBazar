@@ -1,6 +1,6 @@
 from app.models.produtos import Produtos
 
-class produtosDAO():
+class ProdutosDAO():
 
   def __init__(self, db):
     self.db = db

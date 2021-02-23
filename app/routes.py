@@ -1,4 +1,7 @@
 from flask import render_template, request, url_for, redirect, session
+from datetime import datetime
+from PIL import Image
+import os
 from app import app
 
 from app.models.connection import get_db
@@ -6,10 +9,12 @@ from app.models.connection import get_db
 from app.models.usuarios import Usuarios
 from app.models.telefones import Telefones
 from app.models.emails import Emails
+from app.models.produtos import Produtos
 
 from app.controllers.usuariodao import UsuarioDAO
 from app.controllers.telefonedao import TelefoneDAO
 from app.controllers.emaildao import EmailDAO
+from app.controllers.produtodao import ProdutosDAO
 
 # User routes
 @app.route('/index/')
@@ -19,7 +24,6 @@ def index():
 
   return render_template("dashboard.html")
   
-
 @app.route('/', methods=["GET", "POST"])
 @app.route('/login/', methods=["GET", "POST"])
 def login():
@@ -121,10 +125,31 @@ def vendidos():
 
   return render_template('vendidos.html')
 
-@app.route('/cadastrar-produtos/')
+@app.route('/cadastrar-produtos/', methods=["GET", "POST"])
 def vender():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
+
+  if( request.method == "POST" ):
+    controle_produto = ProdutosDAO(get_db())
+    produto = Produtos(
+      request.form['nome'],
+      request.form['preco'],
+      request.form['situacao'],
+      request.form['descricao'],
+      datetime.now(),
+      session['logado'][0]
+    )
+  
+    arquivo = request.files['arquivos']
+    arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], '{}{}'.format(datetime.now(), arquivo.filename)))
+    print(arquivo)
+
+    produto_id = None
+
+    produto_id = controle_produto.cadastrar(produto)
+    
+    #if( produto_id is not None and produto_id > 0 ):
 
   return render_template('vender.html')
 
