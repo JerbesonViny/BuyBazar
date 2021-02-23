@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>Register</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://getbootstrap.com/docs/4.4/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <meta name="theme-color" content="#563d7c">
+  <link rel="stylesheet" href="{{url_for('static', filename='index.css')}}">
+  <!-- Custom styles for this template -->
+  <link href="https://getbootstrap.com/docs/4.4/examples/sign-in/signin.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../static/assets/img/icon.png">
+</head>
+<body class="text-center">
+  <form class="form-signin" method="post" action="{{url_for('cadastrarUsuarios')}}">
+    <img class="mb-4" src="https://image.flaticon.com/icons/png/512/1077/1077077.png" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Preencha os campos</h1>
+
+    <label for="inputName" class="sr-only">Nome</label>
+    <input type="text" name="nome" id="inputName" class="form-control" placeholder="Nome de usuário" required autofocus maxlength="60">
+
+    <label for="inputEmail" class="sr-only">Email</label>
+    <input class="form-control" type="email" name="email" id="inputEmail" placeholder="Email" required>
+
+    <label for="inputCountry" class="sr-only">Telefone</label>
+    <input type="text" name="telefone" id="inputTelefone" class="form-control" placeholder="Telefone" required maxlength="9">
+
+    <label for="inputPassword" class="sr-only">Senha</label>
+    <input class="form-control" type="password" name="senha" id="inputPassword" placeholder="senha" required maxlength="12">
+    
+    <p>
+      <a href="/login/">Já possui uma conta?</a>
+    </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Cadastrar</button>
+    <p class="mt-5 mb-3 text-muted">&copy;BuyBazar By Famia</p>
+  </form>
+</body>
+</html>
