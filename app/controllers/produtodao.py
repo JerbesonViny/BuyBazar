@@ -9,9 +9,9 @@ class ProdutosDAO():
   def cadastrar(self, produtos: Produtos):
     sql = """
     insert into produtos
-    (nome, preco, situacao, descricao, data_pub, usuario_id)
+    (nome, preco, situacao, categoria, data_pub, nome_imagem, usuario_id)
     values
-    (?, ?, ?, ?, ? ,?);
+    (?, ?, ?, ?, ? , ?, ?);
     """
   
     cursor = self.db.cursor()
@@ -19,8 +19,9 @@ class ProdutosDAO():
       produtos.nome,
       produtos.preco,
       produtos.situacao,
-      produtos.descricao,
+      produtos.categoria,
       produtos.data_pub,
+      produtos.nome_imagem,
       produtos.usuario_id)
     )
 
@@ -31,13 +32,13 @@ class ProdutosDAO():
   def obter(self, id):
     sql = """
     select * from produtos
-    where id = ?;
+    where usuario_id = ?;
     """
 
     cursor = self.db.cursor()
-    cursor.execute(sql, (id))
+    cursor.execute(sql, (id,))
 
-    return cursor.fetchone()
+    return cursor.fetchall()
 
   def listar(self):
     sql = """
@@ -52,7 +53,7 @@ class ProdutosDAO():
   def atualizar(self, produtos: Produtos):
     sql = """
     update produtos
-    set nome = ?, preco = ?, situacao = ?, descricao = ?, data_pub = ?
+    set nome = ?, preco = ?, situacao = ?, categoria = ?
     where id = ? and usuario_id = ?;
     """
 
@@ -61,8 +62,7 @@ class ProdutosDAO():
       produtos.nome,
       produtos.preco,
       produtos.situacao,
-      produtos.descricao,
-      produtos.data_pub,
+      produtos.categoria,
       produtos.id,
       produtos.usuario_id)
     )

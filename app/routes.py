@@ -17,14 +17,11 @@ from app.controllers.emaildao import EmailDAO
 from app.controllers.produtodao import ProdutosDAO
 
 # User routes
+@app.route('/')
 @app.route('/index/')
 def index():
-  if( 'logado' not in session or session['logado'] == None ):
-    return redirect(url_for('login'))
-
-  return render_template("dashboard.html")
+  return render_template("index.html")
   
-@app.route('/', methods=["GET", "POST"])
 @app.route('/login/', methods=["GET", "POST"])
 def login():
   if( request.method == "POST" ):
@@ -99,7 +96,11 @@ def produtos(produto_id = ""):
     return redirect(url_for('login'))
 
   if(produto_id == ""):
-    return render_template("mostrarTodos.html")
+    controle_produtos = ProdutosDAO(get_db())
+    produtos = controle_produtos.listar()
+    print(produtos)
+
+    return render_template("mostrarTodos.html", produtos=produtos)
   else:
     return ('Produto, {}' .format(produto_id))
 
@@ -116,7 +117,13 @@ def meusItens():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
 
-  return render_template('listarItens.html')
+  controle_produtos = ProdutosDAO(get_db())
+  produtos = controle_produtos.obter(
+    session['logado'][0]
+  )
+
+  print(produtos)
+  return render_template('listarItens.html', produtos=produtos)
 
 @app.route('/vendidos/')
 def vendidos():
@@ -130,19 +137,24 @@ def vender():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
 
+  
   if( request.method == "POST" ):
+    arquivo = request.files['arquivos']
+    momento = datetime.now()
+    nome_imagem = '{}{}'.format(momento, arquivo.filename)
+
     controle_produto = ProdutosDAO(get_db())
     produto = Produtos(
       request.form['nome'],
       request.form['preco'],
       request.form['situacao'],
-      request.form['descricao'],
+      request.form['categoria'],
       datetime.now(),
+      nome_imagem,
       session['logado'][0]
     )
-  
-    arquivo = request.files['arquivos']
-    arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], '{}{}'.format(datetime.now(), arquivo.filename)))
+
+    arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], '{}{}'.format(momento, arquivo.filename)))
     print(arquivo)
 
     produto_id = None
@@ -162,7 +174,4 @@ def reportarErro():
 
 @app.route('/ajuda/')
 def ajuda():
-  if( 'logado' not in session or session['logado'] == None ):
-    return redirect(url_for('login'))
-
   return render_template('ajuda.html')

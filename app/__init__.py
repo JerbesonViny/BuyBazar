@@ -2,7 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = "/home/jerbeson/Documentos/Desenvolvimento/Python/Flask/BuyBazar/uploads"
+UPLOAD_FOLDER = "/home/jerbeson/Documentos/Desenvolvimento/Python/Flask/BuyBazar/app/static/uploads"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app.config["SECRET_KEY"] = "nicetofamia"

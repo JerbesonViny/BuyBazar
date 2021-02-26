@@ -1,12 +1,13 @@
 class Produtos():
 
-  def __init__(self, nome, preco, situacao, descricao, data_pub, usuario_id):
+  def __init__(self, nome, preco, situacao, categoria, data_pub, nome_imagem, usuario_id):
     self.id = 0
     self.nome = nome
-    self.descricao = descricao
+    self.categoria = categoria
     self.preco = preco
     self.situacao = situacao
     self.data_pub = data_pub
+    self.nome_imagem = nome_imagem
     self.usuario_id = usuario_id
 
   def getId(self):
