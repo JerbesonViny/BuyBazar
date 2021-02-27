@@ -142,15 +142,15 @@
 										</thead>
 										<tbody>
                       {% for produto in produtos %}
-                        <tr>
+                        <tr id="{{produto[0]}}">
                           <td>{{produto[0]}}</td>
                           <td>{{produto[1]}}</td>
                           <td>{{produto[4]}}</td>
                           <td>{{produto[3]}}</td>
                           <td>{{produto[2]}}</td>
                           <td>
-                            <button disabled type="button" class="btn btn-warning btn-sm"><i class="material-icons">mode</i></a>
-                            <button disabled type="button" class="btn btn-danger btn-sm"><i class="material-icons">delete</i></a>
+                            <a href="./{{produto[0]}}/" type="button" class="btn btn-warning btn-sm"><i class="material-icons">mode</i></a>
+                            <a href="./{{produto[0]}}/" type="button" class="btn btn-danger btn-sm"><i class="material-icons">delete</i></a>
                           </td>
                         </tr>
                       {% endfor %}
@@ -230,7 +230,7 @@
     </div>
 	</div>
 	</div>
-	
+
   <!--   Core JS Files   -->
   <script src="../static/assets/js/core/jquery.min.js"></script>
   <script src="../static/assets/js/core/popper.min.js"></script>

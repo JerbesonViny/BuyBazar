@@ -64,7 +64,7 @@
         </ul>
       </div>
     </div>
-	
+
     <div class="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-light navbar-absolute fixed-top border-bottom border-primary ">
@@ -113,7 +113,7 @@
             {% for produto in produtos %}
               <div class="col-md-4">
                 <div class="card card-chart">
-                  <img class="card-img top" src="../static/uploads/{{produto[6]}}">
+                  <img class="card-img top" src="../static/uploads/{{produto[6]}}" width="252px" height="350px">
                   <div class="card-body">
                     <h4 class="card-title">{{produto[1]}}</h4>
                     <p class="card-category">
@@ -121,8 +121,9 @@
                   </div>
                   <div class="card-footer">
                     <div class="stats">
-                      <i class="material-icons">access_time</i>4min atrás
+                      <i class="material-icons">access_time</i>{{produto[5]}}
                     </div>
+                    <a href="https://api.whatsapp.com/send?phone=&text=Desejo comprar este produto: {{produto[1]}}" type="button" class="btn btn-success">Comprar</a>
                   </div>
                 </div>
               </div>

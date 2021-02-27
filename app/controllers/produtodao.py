@@ -40,6 +40,17 @@ class ProdutosDAO():
 
     return cursor.fetchall()
 
+  def obter_especifico(self, id):
+    sql = """
+    select * from produtos
+    where id = ?;
+    """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (id,))
+
+    return cursor.fetchone()
+
   def listar(self):
     sql = """
     select * from produtos;
@@ -50,7 +61,7 @@ class ProdutosDAO():
 
     return cursor.fetchall()
   
-  def atualizar(self, produtos: Produtos):
+  def atualizar(self, produtos: Produtos, produto_id):
     sql = """
     update produtos
     set nome = ?, preco = ?, situacao = ?, categoria = ?
@@ -63,7 +74,7 @@ class ProdutosDAO():
       produtos.preco,
       produtos.situacao,
       produtos.categoria,
-      produtos.id,
+      produto_id,
       produtos.usuario_id)
     )
 

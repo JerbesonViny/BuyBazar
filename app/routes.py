@@ -98,7 +98,6 @@ def produtos(produto_id = ""):
   if(produto_id == ""):
     controle_produtos = ProdutosDAO(get_db())
     produtos = controle_produtos.listar()
-    print(produtos)
 
     return render_template("mostrarTodos.html", produtos=produtos)
   else:
@@ -112,7 +111,7 @@ def listaPedidos():
   return 'List Shopping'
 
 #admin
-@app.route('/meus-produtos/')
+@app.route('/meus-produtos/', methods=['GET', 'POST','PUT', 'DELETE',])
 def meusItens():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
@@ -122,7 +121,22 @@ def meusItens():
     session['logado'][0]
   )
 
-  print(produtos)
+  # Criar uma rota especifica para isso
+  if request.method == 'POST':
+    produto = Produtos(
+      request.form['nome'],
+      request.form['preco'],
+      request.form['situacao'],
+      request.form['categoria'],
+      datetime.now(),
+      'DATTE.png',
+      session['logado'][0]
+    )
+    print(produto.nome)
+
+    novo_produto = controle_produtos.atualizar(produto, 1)
+    return redirect(request.url)
+
   return render_template('listarItens.html', produtos=produtos)
 
 @app.route('/vendidos/')
@@ -155,7 +169,6 @@ def vender():
     )
 
     arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], '{}{}'.format(momento, arquivo.filename)))
-    print(arquivo)
 
     produto_id = None
 
