@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
-  <title>Register</title>
+  <title>Cadastrar</title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
 
@@ -20,18 +20,27 @@
   <form class="form-signin" method="post" action="{{url_for('cadastrarUsuarios')}}">
     <img class="mb-4" src="https://image.flaticon.com/icons/png/512/1077/1077077.png" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Preencha os campos</h1>
+    {% with mensagens = get_flashed_messages(with_categories = True) %}
+      {% if mensagens %}
+        {% for categoria, mensagem in mensagens %}
+          <div class="alert alert-{{categoria}}" role="alert">
+            {{ mensagem }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     <label for="inputName" class="sr-only">Nome</label>
-    <input type="text" name="nome" id="inputName" class="form-control" placeholder="Nome de usuário" required autofocus maxlength="60">
+    <input type="text" name="nome" id="inputName" class="form-control" placeholder="Nome de usuário" autofocus maxlength="60" required>
 
-    <label for="inputEmail" class="sr-only">Email</label>
-    <input class="form-control" type="email" name="email" id="inputEmail" placeholder="Email" required>
+    <label for="inputEmail" class="sr-only">E-mail</label>
+    <input class="form-control" type="email" name="email" id="inputEmail" placeholder="E-mail" required>
 
     <label for="inputCountry" class="sr-only">Telefone</label>
-    <input type="text" name="telefone" id="inputTelefone" class="form-control" placeholder="Telefone" required maxlength="9">
+    <input type="text" name="telefone" id="inputTelefone" class="form-control" placeholder="Telefone" required maxlength="13">
 
     <label for="inputPassword" class="sr-only">Senha</label>
-    <input class="form-control" type="password" name="senha" id="inputPassword" placeholder="senha" required maxlength="12">
+    <input class="form-control" type="password" name="senha" id="inputPassword" placeholder="Senha" required maxlength="12">
     
     <p>
       <a href="/login/">Já possui uma conta?</a>

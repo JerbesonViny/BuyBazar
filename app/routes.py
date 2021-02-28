@@ -1,7 +1,8 @@
-from flask import render_template, request, url_for, redirect, session
+from flask import render_template, request, url_for, redirect, session, flash
+from sqlite3.dbapi2 import complete_statement
 from datetime import datetime
 from PIL import Image
-import os
+import os, hashlib
 from app import app
 
 from app.models.connection import get_db
@@ -25,19 +26,25 @@ def index():
 @app.route('/login/', methods=["GET", "POST"])
 def login():
   if( request.method == "POST" ):
-    email = request.form['email']
+    hash = hashlib.sha512()
     senha = request.form['senha']
+
+    hash.update(senha.encode('utf-8'))
+    senha = hash.hexdigest()
 
     usuario = UsuarioDAO(get_db())
     usuario = usuario.autenticar(
-      email,
+      request.form['email'],
       senha
     )
 
     if( usuario is not None ):
       session['logado'] = usuario
       
+      flash(f'Seja bem vindo(a), {usuario[1]}.', 'info')
       return redirect(url_for('produtos'))
+    else:
+      flash(f'E-mail e/ou senha incorretos!', 'danger')
 
   return render_template("login.html")
 
@@ -46,17 +53,24 @@ def logout():
   session['logado'] = None
   session.clear()
 
-  return redirect(url_for('login'))
+  flash(f'Logout feito com sucesso!', 'success')
+  return redirect(url_for('index'))
 
 @app.route('/sign-up/', methods=["GET", "POST"])
 def cadastrarUsuarios():  
   if( request.method == "POST" ):
     controle = UsuarioDAO(get_db())
 
+    hash = hashlib.sha512()
+    senha = request.form['senha']
+
+    hash.update(senha.encode('utf-8'))
+    senha = hash.hexdigest()
+
     usuario = Usuarios(
       request.form['nome'],
       request.form['email'],
-      request.form['senha']
+      senha
     )
 
     controle_telefone = TelefoneDAO(get_db())
@@ -66,7 +80,7 @@ def cadastrarUsuarios():
 
     usuario_id = None
     if( usuario.nome and usuario.login and usuario.senha ):
-      if( numero_telefone != 0 and len(numero_telefone) == 9 ):
+      if( numero_telefone != 0 and len(numero_telefone) >= 9 ):
         usuario_id = controle.cadastrar(usuario)
 
         telefone = Telefones(
@@ -81,11 +95,16 @@ def cadastrarUsuarios():
 
         controle_telefone.cadastrar(telefone)
         controle_email.cadastrar(email)
-      
+    else:
+      flash(f'Preencha todos os campos!', 'danger')
+      return redirect(request.url)
+
     if( usuario_id is not None and usuario_id > 0 ):
+      flash(f'Usuário cadastrado com sucesso!', 'success')
       return redirect(url_for('login'))
     else:
-      return 'Falha no cadastro!'
+      flash(f'Alguém já possui esse e-mail, tente novamente com outro!')
+      return redirect(request.url)
 
   return render_template("register.html")
 
@@ -139,6 +158,32 @@ def meusItens():
 
   return render_template('listarItens.html', produtos=produtos)
 
+@app.route('/atualizar-produto/<produto_id>/', methods=['GET', 'POST', 'PUT', 'PATCH',])
+def atualizarProduto(produto_id): 
+  if( request.method == 'POST' ):
+    controle_produto = ProdutosDAO(get_db())
+    
+    produto = controle_produto.atualizar(
+      request.form['nome'],
+      request.form['preco'],
+      request.form['situacao'],
+      request.form['categoria'],
+      produto_id,
+      session['logado'][0]
+    )
+
+    return redirect(url_for('produtos'))
+
+  if( request.method == 'GET' ):
+    controle_produto = ProdutosDAO(get_db())
+    produto = controle_produto.obter_especifico(  
+      produto_id
+    )
+
+    return render_template('atualizar-produto.html', produto=produto)
+  
+  
+
 @app.route('/vendidos/')
 def vendidos():
   if( 'logado' not in session or session['logado'] == None ):
@@ -158,23 +203,34 @@ def vender():
     nome_imagem = '{}{}'.format(momento, arquivo.filename)
 
     controle_produto = ProdutosDAO(get_db())
-    produto = Produtos(
-      request.form['nome'],
-      request.form['preco'],
-      request.form['situacao'],
-      request.form['categoria'],
-      datetime.now(),
-      nome_imagem,
-      session['logado'][0]
-    )
-
-    arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], '{}{}'.format(momento, arquivo.filename)))
 
     produto_id = None
+    if( request.form['nome'] and request.form['preco'] and request.form['situacao'] and request.form['categoria'] and momento and request.files['arquivos'] ):
+      produto = Produtos(
+        request.form['nome'],
+        request.form['preco'],
+        request.form['situacao'],
+        request.form['categoria'],
+        momento,
+        nome_imagem,
+        session['logado'][0]
+      )
 
-    produto_id = controle_produto.cadastrar(produto)
+      arquivo.save(os.path.join(app.config['UPLOAD_FOLDER'], '{}{}'.format(momento, arquivo.filename)))
+      produto_id = controle_produto.cadastrar(
+        produto
+      )
     
-    #if( produto_id is not None and produto_id > 0 ):
+      if( produto_id is not None and produto_id > 0 ):
+        flash(f'Produto cadastrado com sucesso!', 'success')
+        
+        return redirect(request.url)
+      else:
+        flash(f'Tente novamente mais tarde! Caso o erro volte a acontecer, entre em contato com o suporte!', 'danger')
+    else:
+      flash(f'Preencha todos os campos!', 'danger')
+      return redirect(request.url)
+    
 
   return render_template('vender.html')
 

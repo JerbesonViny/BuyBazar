@@ -1,0 +1,66 @@
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Venda seus itens</h4>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{{url_for('atualizarProduto', produto_id=produto[0])}}" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-md-6 pr-1">
+                  <div class="form-group">
+                    <label>Nome do produto</label>
+                    <input type="text" value="{{produto[1]}}" name="nome" maxlength="50" class="form-control" placeholder="Ex: Livro Harry Potter e o Prisioneiro de Askaban">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Preço (R$)</label>
+                  </div>
+                  <input type="text" value="{{produto[2]}}" name="preco" maxlength="50" class="form-control" placeholder="Ex: 48.50">
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Estado</label>
+                    <select id="inputEstado" name="situacao" class="form-control">
+                      <option selected>Indefinido</option>
+                      <option>Velho</option>
+                      <option>Meio usado</option>
+                      <option>Praticamente novo</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="inputEstado" name="categoria" class="form-control">
+                      <option selected>Outros</option>
+                      <option>Calçado</option>
+                      <option>Roupa</option>
+                      <option>Jogo</option>
+                      <option>Livro</option>
+                      <option>Revista</option>
+                      <option>Esportivo</option>
+                      <option>Brinquedo</option>
+                      <option>Acessório</option>
+                      <option>Tecnologia</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlFile1">Insira uma imagem</label>
+                <input type="file" name="arquivos" class="form-control-file" id="exampleFormControlFile1" >
+              </div>
+              <button type="submit" class="btn btn-info btn-fill pull-right">Vender
+                produto</button>
+              <div class="clearfix"></div>
+              <img src="#" alt="Prévia da imagem" class="img-thumbnail">
+            </form>
+          </div>
+        </div>
+      </div>

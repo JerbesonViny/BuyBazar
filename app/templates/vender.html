@@ -115,6 +115,15 @@
           <div class="row">
             <div class="col-md-8">
               <div class="card">
+                {% with mensagens = get_flashed_messages(with_categories = True) %}
+                  {% if mensagens %}
+                    {% for categoria, mensagem in mensagens %}
+                      <div class="alert alert-{{categoria}}" role="alert">
+                        {{ mensagem }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
                 <div class="card-header">
                   <h4 class="card-title">Venda seus itens</h4>
                 </div>
@@ -124,7 +133,7 @@
                       <div class="col-md-6 pr-1">
                         <div class="form-group">
                           <label>Nome do produto</label>
-                          <input type="text" name="nome" maxlength="50" class="form-control" placeholder="Ex: Livro Harry Potter e o Prisioneiro de Askaban">
+                          <input type="text" name="nome" maxlength="50" class="form-control" placeholder="Ex: Livro Harry Potter e o Prisioneiro de Askaban" required>
                         </div>
                       </div>
                     </div>
@@ -133,12 +142,12 @@
                         <div class="form-group">
                           <label>Preço (R$)</label>
                         </div>
-                        <input type="text" name="preco" maxlength="50" class="form-control" placeholder="Ex: 48.50">
+                        <input type="text" name="preco" maxlength="50" class="form-control" placeholder="Ex: 48.50" required>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
                           <label>Estado</label>
-                          <select id="inputEstado" name="situacao" class="form-control">
+                          <select id="inputEstado" name="situacao" class="form-control" required>
                             <option selected>Indefinido</option>
                             <option>Velho</option>
                             <option>Meio usado</option>
@@ -149,7 +158,7 @@
                       <div class="col-md-4">
                         <div class="form-group">
                           <label>Categoria</label>
-                          <select id="inputEstado" name="categoria" class="form-control">
+                          <select id="inputEstado" name="categoria" class="form-control" required>
                             <option selected>Outros</option>
                             <option>Calçado</option>
                             <option>Roupa</option>
@@ -166,7 +175,7 @@
                     </div>
                     <div class="form-group">
                       <label for="exampleFormControlFile1">Insira uma imagem</label>
-                      <input type="file" name="arquivos" class="form-control-file" id="exampleFormControlFile1">
+                      <input type="file" name="arquivos" class="form-control-file" id="exampleFormControlFile1" required>
                     </div>
                     <button type="submit" class="btn btn-info btn-fill pull-right">Vender
                       produto</button>
@@ -194,75 +203,11 @@
                 </div>
               </div>
             </div>
-
-            <div class="container">
-              <div class="row">
-                <div class="col-md-12">
-                  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                    </ol>
-                    <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <img class="d-block w-100" src="../static/assets/img/slide-01.png" alt="First slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="../static/assets/img/slide-02.png" alt="Second slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="../static/assets/img/slide-03.png" alt="Third slide">
-                      </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Anterior</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Próximo</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="footer-dark">
-                <footer>
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-sm-6 col-md-3 item">
-                        <h3>Serviços</h3>
-                        <ul>
-                          <li><a href="#">Web design</a></li>
-                          <li><a href="#">Desenvolvimento</a></li>
-                          <li><a href="#">Hospedagem</a></li>
-                        </ul>
-                      </div>
-                      <div class="col-sm-6 col-md-3 item">
-                        <h3>Sobre</h3>
-                        <ul>
-                          <li><a href="#">Companhia</a></li>
-                          <li><a href="#">Time</a></li>
-                          <li><a href="#">Carreira</a></li>
-                        </ul>
-                      </div>
-                      <div class="col-md-6 item text">
-                        <h3>Buy Bazar</h3>
-                        <p>
-                          O Buy Bazar é uma aplicação web que visa a venda e compra de itens usados
-                          dos alunos do IFRN-Campus Apodi, reduzindo o consumismo e gerando economia na aquisição
-                          dos itens.
-                        </p>
-                      </div>
-                    </div>
-                    <p class="copyright">Famia Corp © 2021</p>
-                  </div>
-                </footer>
-              </div>
-            </div>
           </div>
         </div>
       </div>
+
+      {% include "components/footer.html" %}
 
       <!--   Core JS Files   -->
       <script src="../static/assets/js/core/jquery.min.js"></script>

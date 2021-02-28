@@ -4,6 +4,6 @@ $(document).ready(function() {
 });
 
 $.notify({
-	title: "Página Inicial",
+	title: "Página inicial",
   message: "Veja os produtos em oferta no bazar!"
 });

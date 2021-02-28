@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
-  <title>Buy Bazar</title>
+  <title>Entrar</title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
 
@@ -20,8 +20,17 @@
   <form class="form-signin" method="post" action="{{ url_for('login') }}">
     <img class="mb-4" src="https://image.flaticon.com/icons/png/512/1077/1077077.png" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Entre na sua conta</h1>
-    <label for="inputEmail" class="sr-only">Email</label>
-    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+    {% with mensagens = get_flashed_messages(with_categories = True) %}
+      {% if mensagens %}
+        {% for categoria, mensagem in mensagens%}
+          <div class="alert alert-{{categoria}}" role="alert">
+            {{ mensagem }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <label for="inputEmail" class="sr-only">E-mail</label>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="E-mail" required autofocus>
     <label for="inputPassword" class="sr-only">Senha</label>
     <input type="password" name="senha" id="inputPassword" class="form-control" placeholder="Senha" required>
     <div class="checkbox mb-3">

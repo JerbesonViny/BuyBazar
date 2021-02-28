@@ -61,7 +61,7 @@ class ProdutosDAO():
 
     return cursor.fetchall()
   
-  def atualizar(self, produtos: Produtos, produto_id):
+  def atualizar(self, nome, preco, situacao, categoria, produto_id, usuario_id):
     sql = """
     update produtos
     set nome = ?, preco = ?, situacao = ?, categoria = ?
@@ -70,12 +70,12 @@ class ProdutosDAO():
 
     cursor = self.db.cursor()
     cursor.execute(sql, (
-      produtos.nome,
-      produtos.preco,
-      produtos.situacao,
-      produtos.categoria,
+      nome,
+      preco,
+      situacao,
+      categoria,
       produto_id,
-      produtos.usuario_id)
+      usuario_id)
     )
 
     self.db.commit()
