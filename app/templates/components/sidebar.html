@@ -1,0 +1,62 @@
+{% block sidebar %}
+<div class="sidebar" data-color="azure" data-background-color="black" data-image="{{url_for('static', filename='assets/img/sidebar-3.jpg')}}">
+  <!--
+    Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+    Tip 2: you can also add an image using data-image tag
+-->
+  <div class="logo"><a href="/produtos/" class="simple-text logo-normal" class="navbar-left"><img alt="Logo" src="{{url_for('static', filename='assets/img/icon.png')}}" class="img-responsive">
+      Buy Bazar
+    </a></div>
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+      {% if request.url == 'http://127.0.0.1:5000/produtos/' %}
+        <li class="nav-item active">
+      {% else %}
+        <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="/produtos/">
+          <i class="material-icons">dashboard</i>
+          <p>Início</p>
+        </a>
+      </li>
+      {% if request.url == 'http://127.0.0.1:5000/vendidos/' %}
+        <li class="nav-item active">
+      {% else %}
+        <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="/vendidos/">
+          <i class="material-icons">list_alt</i>
+          <p>Vendidos</p>
+        </a>
+      </li>
+      {% if request.url == 'http://127.0.0.1:5000/meus-produtos/' %}
+        <li class="nav-item active">
+      {% else %}
+        <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="/meus-produtos/">
+          <i class="material-icons">content_paste</i>
+          <p>Meus produtos</p>
+        </a>
+      </li>
+      {% if request.url == 'http://127.0.0.1:5000/cadastrar-produtos/' %}
+        <li class="nav-item active">
+      {% else %}
+        <li class="nav-item">
+      {% endif %}
+        <a class="nav-link" href="/cadastrar-produtos/">
+          <i class="material-icons">savings</i>
+          <p>Vender itens</p>
+        </a>
+      </li>
+      <li class="nav-item active-pro ">
+        <a class="nav-link" href="/reportar-erro/">
+          <i class="material-icons">error</i>
+          <p>Reportar erro</p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="{{url_for('static', filename='index.css')}}">
   <!-- Custom styles for this template -->
   <link href="https://getbootstrap.com/docs/4.4/examples/sign-in/signin.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="../static/assets/img/icon.png">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/icon.png') }}">
 </head>
 <body class="text-center">
   <form class="form-signin" method="post" action="{{url_for('cadastrarUsuarios')}}">

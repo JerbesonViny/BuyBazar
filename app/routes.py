@@ -13,7 +13,7 @@ from app.models.emails import Emails
 from app.models.produtos import Produtos
 
 from app.controllers.usuariodao import UsuarioDAO
-from app.controllers.telefonedao import TelefoneDAO
+from app.controllers.telefonedao import TelefonesDAO
 from app.controllers.emaildao import EmailDAO
 from app.controllers.produtodao import ProdutosDAO
 
@@ -21,7 +21,10 @@ from app.controllers.produtodao import ProdutosDAO
 @app.route('/')
 @app.route('/index/')
 def index():
-  return render_template("index.html")
+  controle_produtos = ProdutosDAO(get_db())
+  produtos = controle_produtos.obterUltimos()
+
+  return render_template("index.html", produtos = produtos)
   
 @app.route('/login/', methods=["GET", "POST"])
 def login():
@@ -73,7 +76,7 @@ def cadastrarUsuarios():
       senha
     )
 
-    controle_telefone = TelefoneDAO(get_db())
+    controle_telefone = TelefonesDAO(get_db())
     numero_telefone = request.form['telefone']
 
     controle_email = EmailDAO(get_db())
@@ -122,6 +125,24 @@ def produtos(produto_id = ""):
   else:
     return ('Produto, {}' .format(produto_id))
 
+@app.route('/comprar-produto/<produto_id>/')
+def comprarProduto(produto_id):
+  if( 'logado' not in session or session['logado'] == None ):
+    return redirect(url_for('login'))
+
+  controle_telefones = TelefonesDAO(get_db())
+  controle_produto = ProdutosDAO(get_db())
+  
+  produto = controle_produto.obter_especifico(
+    produto_id
+  )
+
+  telefone = controle_telefones.obter_por_usuario(
+    produto[7]
+  )
+  
+  return redirect(f'https://api.whatsapp.com/send?phone={telefone[0]}&text=Desejo comprar este produto: {produto[1]}')
+
 @app.route('/shopping/')
 def listaPedidos():
   if( 'logado' not in session or session['logado'] == None ):
@@ -130,7 +151,7 @@ def listaPedidos():
   return 'List Shopping'
 
 #admin
-@app.route('/meus-produtos/', methods=['GET', 'POST','PUT', 'DELETE',])
+@app.route('/meus-produtos/')
 def meusItens():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
@@ -144,7 +165,7 @@ def meusItens():
   if request.method == 'POST':
     produto = Produtos(
       request.form['nome'],
-      request.form['preco'],
+      float(request.form['preco']),
       request.form['situacao'],
       request.form['categoria'],
       datetime.now(),
@@ -158,12 +179,13 @@ def meusItens():
 
   return render_template('listarItens.html', produtos=produtos)
 
-@app.route('/atualizar-produto/<produto_id>/', methods=['GET', 'POST', 'PUT', 'PATCH',])
+@app.route('/atualizar-produto/<produto_id>/', methods=['GET', 'POST', 'PUT',])
 def atualizarProduto(produto_id): 
   if( request.method == 'POST' ):
     controle_produto = ProdutosDAO(get_db())
     
-    produto = controle_produto.atualizar(
+    if( request.form['nome'] and request.form['preco'] and request.form['situacao'] and request.form['categoria'] ):
+      produto = controle_produto.atualizar(
       request.form['nome'],
       request.form['preco'],
       request.form['situacao'],
@@ -172,17 +194,28 @@ def atualizarProduto(produto_id):
       session['logado'][0]
     )
 
-    return redirect(url_for('produtos'))
+    flash(f'Atualização do produto {produto_id}, feita com sucesso!', 'success')
+    return redirect(url_for('meusItens'))
 
-  if( request.method == 'GET' ):
-    controle_produto = ProdutosDAO(get_db())
-    produto = controle_produto.obter_especifico(  
-      produto_id
-    )
+  
+  controle_produto = ProdutosDAO(get_db())
+  produto = controle_produto.obter_especifico(  
+    produto_id
+  )
 
-    return render_template('atualizar-produto.html', produto=produto)
+  return render_template('atualizar-produto.html', produto=produto)
   
-  
+@app.route('/deletar-produto/<produto_id>/', methods=['GET', 'POST', 'DELETE'])
+def deletarProduto(produto_id):
+  controle_produtos = ProdutosDAO(get_db())
+  produto = controle_produtos.deletar(
+    produto_id,
+    session['logado'][0]
+  )
+
+  if( produto != 0 ):
+    flash(f'Produto {produto_id} apagado com sucesso!', 'success')
+    return redirect(url_for('meusItens'))
 
 @app.route('/vendidos/')
 def vendidos():
@@ -244,3 +277,12 @@ def reportarErro():
 @app.route('/ajuda/')
 def ajuda():
   return render_template('ajuda.html')
+
+@app.route('/<produto_nome>/')
+def any_(produto_nome):
+  controle_produtos = ProdutosDAO(get_db())
+  produtos = controle_produtos.obterPorNome(
+    produto_nome
+  )
+
+  return render_template('components/pesquisa.html', produtos = produtos)

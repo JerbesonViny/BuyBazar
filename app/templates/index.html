@@ -6,14 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='assets/img/icon.png')}}">
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='assets/img/icon.png')}}">
 
   <title>Buy Bazar - Principal</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="../static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/bootstrap/css/bootstrap.min.css')}}">
   <!-- Custom styles for this template -->
-  <link href="../static/assets/css/modern-business.css" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/css/modern-business.css')}}" rel="stylesheet">
 </head>
 <body>
 
@@ -43,36 +44,31 @@
   <header>
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
-        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
       </ol>
-      <div class="carousel-inner" role="listbox">
-        <!-- Slide One - Set the background image for this slide in the line below -->
-        <div class="carousel-item active" style="background-image: url('http://placehold.it/1900x1080')">
-          <div class="carousel-caption d-none d-md-block">
-          </div>
-        </div>
-        <!-- Slide Two - Set the background image for this slide in the line below -->
-        <div class="carousel-item" style="background-image: url('http://placehold.it/1900x1080')">
-          <div class="carousel-caption d-none d-md-block">
-          </div>
-        </div>
-        <!-- Slide Three - Set the background image for this slide in the line below -->
-        <div class="carousel-item" style="background-image: url('http://placehold.it/1900x1080')">
-          <div class="carousel-caption d-none d-md-block">
-          </div>
-        </div>
+      <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img class="d-block w-100 h-100" src="{{url_for('static', filename='assets/img/principal.png')}}" alt="Principal">
+      </div>
+      <div class="carousel-item">
+        <img class="d-block w-100 h-100" src="{{url_for('static', filename='assets/img/compre.png')}}" alt="Compre">
+      </div>
+      <div class="carousel-item">
+        <img class="d-block w-100 h-100" src="{{url_for('static', filename='assets/img/economize.png')}}" alt="Economize">
+      </div>
       </div>
       <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Anterior</span>
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Anterior</span>
       </a>
       <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Avançar</span>
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Próximo</span>
       </a>
     </div>
+
   </header>
 
   {% with mensagens = get_flashed_messages(with_categories = True) %}
@@ -94,84 +90,23 @@
 
     <!-- Portfolio Section -->
     <h2>Produtos recentes</h2>
-
-    <div class="row">
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="/login/">Project One</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur eum
-              quasi sapiente nesciunt? Voluptatibus sit, repellat sequi itaque deserunt, dolores in, nesciunt, illum
-              tempora ex quae? Nihil, dolorem!</p>
+    {% if produtos %}
+      <div class="row">
+        {% for produto in produtos %}
+        <div class="col-lg-4 col-sm-6 portfolio-item">
+          <div class="card h-100">
+            <a href="/login/"><img class="card-img-top" src="../static/uploads/{{produto[0]}}" alt="" width="252px" height="350px"></a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="/login/">{{produto[1]}}</a>
+              </h4>
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="/login/">Project Two</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio,
-              gravida pellentesque urna varius vitae.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="/login/">Project Three</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos quisquam, error quod sed
-              cumque, odio distinctio velit nostrum temporibus necessitatibus et facere atque iure perspiciatis mollitia
-              recusandae vero vel quam!</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="/login/">Project Four</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio,
-              gravida pellentesque urna varius vitae.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="/login/">Project Five</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio,
-              gravida pellentesque urna varius vitae.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-sm-6 portfolio-item">
-        <div class="card h-100">
-          <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-          <div class="card-body">
-            <h4 class="card-title">
-              <a href="/login/">Project Six</a>
-            </h4>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque earum nostrum suscipit
-              ducimus nihil provident, perferendis rem illo, voluptate atque, sit eius in voluptates, nemo repellat
-              fugiat excepturi! Nemo, esse.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% endif %}
+    
     <!-- /.row -->
 
     <!-- Features Section -->
@@ -187,7 +122,7 @@
           produtos, é também melhorar sua experiência.</p>
       </div>
       <div class="col-lg-6">
-        <img class="img-fluid rounded" src="http://placehold.it/700x450" alt="">
+        <img class="img-fluid rounded" src="/static/assets/img/ft.png" alt="">
       </div>
     </div>
     <!-- /.row -->
@@ -242,10 +177,10 @@
   </footer>
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="../static/assets/js/core/jquery.min.js"></script>
-  <script src="../static/assets/js/core/popper.min.js"></script>
-  <script src="../static/assets/js/plugins/bootstrap.bundle.min.js"></script>
+  <script src="{{url_for('static', filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/js/core/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/js/core/popper.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/js/plugins/bootstrap.bundle.min.js')}}"></script>
 </body>
 
 </html>

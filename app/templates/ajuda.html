@@ -7,14 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{url_for('static', filename='assets/img/icon.png')}}">
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='assets/img/icon.png')}}">
 
   <title>Buy Bazar - Principal</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="../static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="../static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 </head>
 
 <body>
@@ -22,7 +24,7 @@
   <!-- Navigation -->
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/ajuda/">Buy Bazar - Ajuda</a>
+      <a class="navbar-brand" href="/index/">Buy Bazar - Ajuda</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -132,11 +134,10 @@
   </footer>
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../static/assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="../static/assets/js/core/jquery.min.js"></script>
-  <script src="../static/assets/js/core/popper.min.js"></script>
-  <script src="../static/assets/js/plugins/bootstrap.bundle.min.js"></script>
-
+  <script src="{{url_for('static', filename='assets/bootstrap/js/bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/js/core/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/js/core/popper.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/js/plugins/bootstrap.bundle.min.js')}}"></script>
 </body>
 
 </html>

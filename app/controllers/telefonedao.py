@@ -1,6 +1,6 @@
 from app.models.telefones import Telefones
 
-class TelefoneDAO():
+class TelefonesDAO():
 
   def __init__(self, db):
     self.db = db
@@ -31,7 +31,18 @@ class TelefoneDAO():
     """
 
     cursor = self.db.cursor()
-    cursor.execute(sql, (id))
+    cursor.execute(sql, (id,))
+
+    return cursor.fetchone()
+
+  def obter_por_usuario(self, usuario_id):
+    sql = """
+    select numero from telefones
+    where usuario_id = ?;
+    """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (usuario_id,))
 
     return cursor.fetchone()
 

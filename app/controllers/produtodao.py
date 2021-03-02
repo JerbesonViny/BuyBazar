@@ -82,16 +82,47 @@ class ProdutosDAO():
 
     return cursor.rowcount
   
-  def deletar(self, id):
+  def deletar(self, id, usuario_id):
     sql = """
     delete from produtos
-    where id = ?;
+    where id = ? and usuario_id = ?;
     """
 
     cursor = self.db.cursor()
-    cursor.execute(sql, (id))
+    cursor.execute(sql, (
+      id,
+      usuario_id)
+    )
 
     self.db.commit()
 
     return cursor.rowcount 
   
+  def obterUltimos(self):
+    sql = """
+    select nome_imagem, nome
+    from produtos 
+    order by data_pub desc 
+    limit 6;
+    """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql)
+
+    return cursor.fetchall()
+
+  def obterPorNome(self, nome):
+    sql = """
+    select * from produtos
+    where nome like ?;
+    """
+    
+    cursor = self.db.cursor()
+    cursor.execute(sql, (nome,))
+
+    return cursor.fetchall()
+
+  def obterVendidos(self, usuario_id):
+    sql = """
+    select produtos
+    """
