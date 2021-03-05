@@ -1,5 +1,5 @@
 from flask import render_template, request, url_for, redirect, session, flash
-from sqlite3.dbapi2 import complete_statement
+from sqlite3.dbapi2 import Error, complete_statement
 from datetime import datetime
 from PIL import Image
 import os, hashlib
@@ -11,11 +11,13 @@ from app.models.usuarios import Usuarios
 from app.models.telefones import Telefones
 from app.models.emails import Emails
 from app.models.produtos import Produtos
+from app.models.reportarerro import ReportarErro
 
 from app.controllers.usuariodao import UsuarioDAO
 from app.controllers.telefonedao import TelefonesDAO
 from app.controllers.emaildao import EmailDAO
 from app.controllers.produtodao import ProdutosDAO
+from app.controllers.reportarerrodao import ReportarErroDAO
 
 # User routes
 @app.route('/')
@@ -63,41 +65,47 @@ def logout():
 def cadastrarUsuarios():  
   if( request.method == "POST" ):
     controle = UsuarioDAO(get_db())
-
-    hash = hashlib.sha512()
-    senha = request.form['senha']
-
-    hash.update(senha.encode('utf-8'))
-    senha = hash.hexdigest()
-
-    usuario = Usuarios(
-      request.form['nome'],
-      request.form['email'],
-      senha
-    )
-
     controle_telefone = TelefonesDAO(get_db())
+    controle_email = EmailDAO(get_db())
+    
+    nome = request.form['nome']
+    email = request.form['email']
+    senha = request.form['senha']
     numero_telefone = request.form['telefone']
 
-    controle_email = EmailDAO(get_db())
-
     usuario_id = None
-    if( usuario.nome and usuario.login and usuario.senha ):
-      if( numero_telefone != 0 and len(numero_telefone) >= 9 ):
-        usuario_id = controle.cadastrar(usuario)
+    if( nome and email and senha and numero_telefone ):
+      if( len(numero_telefone) >= 9 ):
+        hash = hashlib.sha512()
+        hash.update(senha.encode('utf-8'))
+        senha = hash.hexdigest()
 
-        telefone = Telefones(
-          numero_telefone,
-          usuario_id
-        )
-
-        email = Emails(
+        usuario = Usuarios(
+          request.form['nome'],
           request.form['email'],
-          usuario_id,
+          senha
         )
+        try:
+          usuario_id = controle.cadastrar(usuario)
+          
+          telefone = Telefones(
+            numero_telefone,
+            usuario_id
+          )
 
-        controle_telefone.cadastrar(telefone)
-        controle_email.cadastrar(email)
+          email = Emails(
+            request.form['email'],
+            usuario_id,
+          )
+
+          controle_telefone.cadastrar(telefone)
+          controle_email.cadastrar(email)
+        except:
+          flash(f'Alguém já possui esse e-mail, tente novamente com outro!', 'danger')
+          return redirect(request.url)
+      else: 
+        flash(f'Número inválido, certifique-se de ter preenchido corretamente!', 'danger')
+        return redirect(request.url)
     else:
       flash(f'Preencha todos os campos!', 'danger')
       return redirect(request.url)
@@ -106,24 +114,66 @@ def cadastrarUsuarios():
       flash(f'Usuário cadastrado com sucesso!', 'success')
       return redirect(url_for('login'))
     else:
-      flash(f'Alguém já possui esse e-mail, tente novamente com outro!')
+      flash(f'Ocorreu um erro durante o cadastro, tente novamente!', 'danger')
       return redirect(request.url)
 
   return render_template("register.html")
 
+@app.route('/tirar-vendido/<produto_id>/')
+def tirarVendido(produto_id):
+  controle_produtos = ProdutosDAO(get_db())
+  try:
+    produto = controle_produtos.obter_especifico(produto_id)
+
+    if( produto[7] == session['logado'][0] ):
+      produto_vendido = controle_produtos.tirarVendido(produto_id)
+
+      if( produto_vendido is not None and produto_vendido > 0 ):
+        flash(f'Produto retirado de vendidos com sucesso!', 'success')
+        return redirect(url_for('meusItens'))
+      else:
+        flash(f'Ocorreu um erro durante a retirada de item vendido, tente novamente', 'danger')
+        return redirect(url_for('meusItens'))
+    else:
+      flash(f'Esse produto não é seu!', 'danger')
+      return redirect(url_for('meusItens'))
+  except Error as err:
+    print(err)
+    flash(f'Ocorreu um erro, entre em contato com o suporte!', 'danger')
+    return redirect(url_for('meusItens'))
+
+@app.route('/declarar-vendido/<produto_id>/')
+def declararVendido(produto_id):
+  controle_produtos = ProdutosDAO(get_db())
+  try:
+    produto = controle_produtos.obter_especifico(produto_id)
+
+    if( produto[7] == session['logado'][0] ):
+      produto_vendido = controle_produtos.declararVendido(produto_id)
+
+      if( produto_vendido is not None and produto_vendido > 0 ):
+        flash(f'Produto declarado como vendido com sucesso!', 'success')
+        return redirect(url_for('meusItens'))
+      else:
+        flash(f'Ocorreu um erro durante a declaração de item vendido, tente novamente', 'danger')
+        return redirect(url_for('meusItens'))
+    else:
+      flash(f'Esse produto não é seu!', 'danger')
+      return redirect(url_for('meusItens'))
+  except Error as err:
+    print(err)
+    flash(f'Ocorreu um erro, entre em contato com o suporte!', 'danger')
+    return redirect(url_for('meusItens'))
+
 @app.route('/produtos/')
-@app.route('/produtos/<int:produto_id>/')
-def produtos(produto_id = ""):
+def produtos():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
 
-  if(produto_id == ""):
-    controle_produtos = ProdutosDAO(get_db())
-    produtos = controle_produtos.listar()
-
-    return render_template("mostrarTodos.html", produtos=produtos)
-  else:
-    return ('Produto, {}' .format(produto_id))
+  controle_produtos = ProdutosDAO(get_db())
+  produtos = controle_produtos.listar()
+  
+  return render_template("mostrarTodos.html", produtos=produtos)
 
 @app.route('/comprar-produto/<produto_id>/')
 def comprarProduto(produto_id):
@@ -222,7 +272,10 @@ def vendidos():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
 
-  return render_template('vendidos.html')
+  controle_produtos = ProdutosDAO(get_db())
+  produtos = controle_produtos.obterVendidos(session['logado'][0])
+
+  return render_template('vendidos.html', produtos = produtos)
 
 @app.route('/cadastrar-produtos/', methods=["GET", "POST"])
 def vender():
@@ -267,10 +320,34 @@ def vender():
 
   return render_template('vender.html')
 
-@app.route('/reportar-erro/')
+@app.route('/reportar-erro/', methods=['GET', 'POST',])
 def reportarErro():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
+
+  if( request.method == 'POST' ):
+    controle_erros = ReportarErroDAO(get_db())
+    erro = request.form['erro']
+
+    if( erro ):
+      erros = ReportarErro(
+        erro,
+        session['logado'][0]
+      )
+
+      resultado = controle_erros.cadastrar(
+        erros
+      )
+
+      if( resultado is not None and resultado > 0 ):
+        flash(f'O problema foi mandado para a assistência técnica!\nObrigado pelo feedback!', 'success')
+        return redirect(request.url)
+      else:
+        flash(f'Ocorreu um erro ao tentar reportar um erro!', 'danger')
+        return redirect(request.url)
+    else:
+      flash(f'Preencha todos os campos!', 'danger')
+      return redirect(request.url)
 
   return render_template('erro.html')
 
@@ -278,11 +355,12 @@ def reportarErro():
 def ajuda():
   return render_template('ajuda.html')
 
-@app.route('/<produto_nome>/')
-def any_(produto_nome):
+@app.route('/resultados/', methods=['GET', 'POST',])
+def buscar_produtos():
   controle_produtos = ProdutosDAO(get_db())
+
   produtos = controle_produtos.obterPorNome(
-    produto_nome
+    request.form['buscar']
   )
 
-  return render_template('components/pesquisa.html', produtos = produtos)
+  return render_template('mostrarTodos.html', produtos = produtos)

@@ -77,7 +77,16 @@
                   <p class="card-category">Reporte-nos para possíveis correções!</p>
                 </div>
                 <div class="card-body">
-                  <form>
+                  {% with mensagens = get_flashed_messages(with_categories = True) %}
+                  {% if mensagens %}
+                    {% for categoria, mensagem in mensagens %}
+                      <div class="alert alert-{{categoria}}" role="alert">
+                        {{ mensagem }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                  {% endwith %}
+                  <form method="POST" action="{{url_for('reportarErro')}}">
                     <div class="row">
                       <div class="col-md-4">
                         <div class="form-group">
@@ -98,7 +107,7 @@
                         <div class="form-group">
                           <div class="form-group">
                             <label class="bmd-label-floating">Escreva sobre o problema</label>
-                            <textarea class="form-control" rows="5"></textarea>
+                            <textarea name="erro" class="form-control" rows="5"></textarea>
                           </div>
                         </div>
                       </div>

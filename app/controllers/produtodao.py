@@ -32,7 +32,9 @@ class ProdutosDAO():
   def obter(self, id):
     sql = """
     select * from produtos
-    where usuario_id = ?;
+    where usuario_id = ? and id not in (
+      select produto_id from vendidos
+    );
     """
 
     cursor = self.db.cursor()
@@ -53,7 +55,10 @@ class ProdutosDAO():
 
   def listar(self):
     sql = """
-    select * from produtos;
+    select * from produtos
+    where id not in (
+      select produto_id from vendidos
+    );
     """
 
     cursor = self.db.cursor()
@@ -91,8 +96,8 @@ class ProdutosDAO():
     cursor = self.db.cursor()
     cursor.execute(sql, (
       id,
-      usuario_id)
-    )
+      usuario_id
+    ))
 
     self.db.commit()
 
@@ -100,9 +105,9 @@ class ProdutosDAO():
   
   def obterUltimos(self):
     sql = """
-    select nome_imagem, nome
-    from produtos 
-    order by data_pub desc 
+    select nome_imagem, nome from produtos
+    where id not in (select produto_id from vendidos)
+    order by data_pub desc
     limit 6;
     """
 
@@ -118,11 +123,48 @@ class ProdutosDAO():
     """
     
     cursor = self.db.cursor()
-    cursor.execute(sql, (nome,))
+    cursor.execute(sql, (f'%{nome}%',))
 
     return cursor.fetchall()
 
   def obterVendidos(self, usuario_id):
     sql = """
-    select produtos
+    select produtos.* 
+    from produtos
+    join vendidos
+    on produtos.id = vendidos.produto_id
+    where produtos.usuario_id = ?;
     """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (usuario_id,))
+
+    return cursor.fetchall()
+
+  def declararVendido(self, produto_id):
+    sql = """
+    insert into vendidos
+    (produto_id)
+    values
+    (?);
+    """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (produto_id,))
+
+    self.db.commit()
+
+    return cursor.lastrowid
+  
+  def tirarVendido(self, produto_id):
+    sql = """
+    delete from vendidos
+    where produto_id = ?;
+    """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (produto_id,))
+
+    self.db.commit()
+
+    return cursor.rowcount

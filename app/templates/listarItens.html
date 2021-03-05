@@ -105,37 +105,10 @@
                             <td>{{produto[2]}}</td>
                             <td>
                               <a href="/atualizar-produto/{{produto[0]}}/" type="button" class="btn btn-warning btn-sm"><i class="material-icons">mode</i></a>
-                              <button type="button" data-toggle="modal" data-target="#siteModal" class="btn btn-danger btn-sm"><i class="material-icons">delete</i></button>
-                              <a href="" type="button" class="btn btn-secondary btn-sm"><i class="material-icons">mode</i></a>
+                              <button id="/deletar-produto/{{produto[0]}}/" type="button" data-toggle="modal" data-target="#siteModal" class="btn btn-danger btn-sm"><i class="material-icons">delete</i></button>
+                              <button id="/declarar-vendido/{{produto[0]}}/" type="button" data-toggle="modal" data-target="#siteModal" class="btn btn-dark btn-sm"><i class="material-icons">local_atm</i></button>
                             </td>
                           </tr>
-                          <div class="modal fade" id="siteModal" tabindex="-1" role="dialog">
-                            <div class="modal-dialog modal-lg" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title">Confirmação da exclusão de item</h5>
-                                  <button type="button" class="close" data-dismiss="modal">
-                                    <span>&times;</span>
-                                  </button>
-                                </div>           
-                                <div class="modal-body"> 
-                                  <div class="container-fluid">
-                                    <div class=row>
-                                      <div class="col-6">
-                                        <h5>Você deseja realmente excluir este item?</h5>
-                                        <p> Nome: {{produto[1]}}</p>
-                                        <p> Preço: {{produto[2]}}</p>
-                                      </div>       
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="modal-header">
-                                  <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                                  <a href="/deletar-produto/{{produto[0]}}/" class="btn btn-info">Confirmar</a>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
                         {% endfor %}
 		  								</tbody>
 		  							</table>
@@ -147,6 +120,31 @@
 		  	</div>
 		  </div>
 		  {% include "components/footer.html" %}
+    </div>
+  </div>
+  <div class="modal fade" id="siteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmação da exclusão de item</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>           
+        <div class="modal-body"> 
+          <div class="container-fluid">
+            <div class=row>
+              <div class="col-6">
+                <h5>Você deseja realmente excluir este item?</h5>
+              </div>       
+            </div>
+          </div>
+        </div>
+        <div class="modal-header">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <a id="confirmar" href="" class="btn btn-info">Confirmar</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -189,6 +187,8 @@
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{url_for('static', filename='assets/js/material-dashboard.js')}}" type="text/javascript"></script>
   
+  <script src="../static/assets/js/get-modal.js"></script>
+
   <script>
     $(document).ready(function() {
       // Javascript method's body can be found in assets/js/demos.js

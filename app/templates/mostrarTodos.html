@@ -47,9 +47,9 @@
               {% endif %}
             {% endwith %}
           <div class="collapse navbar-collapse justify-content-end">
-            <form class="navbar-form">
+            <form class="navbar-form" action="{{url_for('buscar_produtos')}}" method="POST">
               <div class="input-group no-border">
-                <input type="text" value="" class="form-control" placeholder="Procurar...">
+                <input type="text" name="buscar" class="form-control" placeholder="Procurar...">
                 <button type="submit" class="btn btn-white btn-round btn-just-icon">
                   <i class="material-icons">search</i>
                   <div class="ripple-container"></div>
@@ -81,7 +81,7 @@
             {% for produto in produtos %}
               <div class="col-md-4">
                 <div class="card card-chart">
-                  <img class="card-img top" src="../static/uploads/{{produto[6]}}" width="252px" height="350px">
+                  <img class="card-img top" src="{{url_for('static', filename='uploads/')}}{{produto[6]}}" width="252px" height="350px">
                   <div class="card-body">
                     <h4 class="card-title">{{produto[1]}}</h4>
                     <p class="card-category">
@@ -91,7 +91,7 @@
                     <div class="stats">
                       <i class="material-icons">access_time</i>{{produto[5]}}
                     </div>
-                    <a href="/comprar-produto/{{produto[0]}}/" type="button" class="btn btn-success">Comprar</a>
+                    <a href="/comprar-produto/{{produto[0]}}/" target="_blank" type="button" class="btn btn-success">Comprar</a>
                   </div>
                 </div>
               </div>
@@ -144,6 +144,6 @@
   <script src="{{url_for('static', filename='assets/js/plugins/bootstrap-notify.js')}}"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{url_for('static', filename='assets/js/material-dashboard.js')}}" type="text/javascript"></script>
-  <script src="{{url_for('static', filename='assets/js/notify-index.js')}}"></script>
+  <!--<script src="{{url_for('static', filename='assets/js/notify-index.js')}}"></script>-->
 </body>
 </html>

@@ -8,9 +8,30 @@
 </head>
 <body>
   {% if produtos %}
-    {% for produto in produtos %}
-      <p>{{produto[1]}}</p>
-    {% endfor %}
+  {% for produto in produtos %}
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card card-chart">
+            <img class="card-img top" src="../static/uploads/{{produto[6]}}">
+            <div class="card-body">
+              <h4 class="card-title">{{produto[1]}}</h4>
+              <p class="card-category">
+                <span class="text-success"> R$ {{produto[2]}} </span></p>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">access_time</i>{{produto[5]}}
+              </div>
+              <button type="button" class="btn btn-danger">Vendido</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
   {% else %}
     <p>Não existem produtos com esse nome!</p>
   {% endif %}
