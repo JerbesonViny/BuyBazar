@@ -1,3 +1,7 @@
+-- O arquivo bazar.db é o banco com toda as alterações
+
+-- Esse foi o modelo inicial, algumas alterações foram feitas!
+
 /* ÁREA DE CRIAÇÃO DAS TABELAS */
 
 create table if not exists usuarios (

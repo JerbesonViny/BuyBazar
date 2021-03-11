@@ -126,6 +126,29 @@ class ProdutosDAO():
     cursor.execute(sql, (f'%{nome}%',))
 
     return cursor.fetchall()
+  
+  def obterPorNomeUsuario(self, nome, usuario_id, situacao):
+    if( situacao == 0 ):
+      sql = """
+      select * from produtos
+      where nome like ? and usuario_id = ?
+      and id not in (select produto_id from vendidos);
+      """
+
+    elif( situacao == 1 ):
+      sql = """
+      select * from produtos
+      where nome like ? and usuario_id = ?
+      and id in (select produto_id from vendidos);
+      """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (
+      f'%{nome}%',
+      usuario_id
+    ))
+
+    return cursor.fetchall()
 
   def obterVendidos(self, usuario_id):
     sql = """

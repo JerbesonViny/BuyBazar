@@ -5,6 +5,8 @@ from PIL import Image
 import os, hashlib
 from app import app
 
+from jinja2 import Template
+
 from app.models.connection import get_db
 
 from app.models.usuarios import Usuarios
@@ -193,7 +195,7 @@ def comprarProduto(produto_id):
   
   return redirect(f'https://api.whatsapp.com/send?phone={telefone[0]}&text=Desejo comprar este produto: {produto[1]}')
 
-@app.route('/shopping/')
+@app.route('/minhas-compras/')
 def listaPedidos():
   if( 'logado' not in session or session['logado'] == None ):
     return redirect(url_for('login'))
@@ -364,3 +366,38 @@ def buscar_produtos():
   )
 
   return render_template('mostrarTodos.html', produtos = produtos)
+
+@app.route('/resultado-vendidos/', methods=['GET', 'POST',])
+def buscar_vendidos():
+  controle_produtos = ProdutosDAO(get_db())
+
+  """
+  situação: {
+    0 - Não vendido
+    1 - Vendido
+  }
+  """
+  produtos = controle_produtos.obterPorNomeUsuario(
+    request.form['buscar'],
+    session['logado'][0],
+    1
+  )
+
+  return render_template('vendidos.html', produtos = produtos)
+
+@app.route('/resultado-meus-itens/', methods=['GET', 'POST',])
+def buscar_meus_itens():
+  controle_produtos = ProdutosDAO(get_db())
+  """
+  situação: {
+    0 - Não vendido
+    1 - Vendido
+  }
+  """
+  produtos = controle_produtos.obterPorNomeUsuario(
+    request.form['buscar'],
+    session['logado'][0],
+    0
+  )
+
+  return render_template('listarItens.html', produtos = produtos)

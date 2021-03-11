@@ -10,7 +10,7 @@
     </a></div>
   <div class="sidebar-wrapper">
     <ul class="nav">
-      {% if request.url == 'http://127.0.0.1:5000/produtos/' %}
+      {% if request.path == '/produtos/' or request.path == '/resultados/' %}
         <li class="nav-item active">
       {% else %}
         <li class="nav-item">
@@ -20,7 +20,7 @@
           <p>Início</p>
         </a>
       </li>
-      {% if request.url == 'http://127.0.0.1:5000/vendidos/' %}
+      {% if request.path == '/vendidos/' or request.path == '/resultado-vendidos/' %}
         <li class="nav-item active">
       {% else %}
         <li class="nav-item">
@@ -30,7 +30,7 @@
           <p>Vendidos</p>
         </a>
       </li>
-      {% if request.url == 'http://127.0.0.1:5000/meus-produtos/' %}
+      {% if request.path == '/meus-produtos/' or request.path == '/resultado-meus-itens/' %}
         <li class="nav-item active">
       {% else %}
         <li class="nav-item">
@@ -40,7 +40,7 @@
           <p>Meus produtos</p>
         </a>
       </li>
-      {% if request.url == 'http://127.0.0.1:5000/cadastrar-produtos/' %}
+      {% if request.path == '/cadastrar-produtos/' %}
         <li class="nav-item active">
       {% else %}
         <li class="nav-item">
@@ -50,12 +50,21 @@
           <p>Vender itens</p>
         </a>
       </li>
+      {% if request.path == '/reportar-erro/' %}
+      <li class="nav-item active-pro active ">
+        <a class="nav-link" href="/reportar-erro/">
+          <i class="material-icons">error</i>
+          <p>Reportar erro</p>
+        </a>
+      </li>
+      {% else %}
       <li class="nav-item active-pro ">
         <a class="nav-link" href="/reportar-erro/">
           <i class="material-icons">error</i>
           <p>Reportar erro</p>
         </a>
       </li>
+      {% endif %}
     </ul>
   </div>
 </div>
