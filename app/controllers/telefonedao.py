@@ -56,19 +56,19 @@ class TelefonesDAO():
 
     return cursor.fetchall()
   
-  def atualizar(self, telefone: Telefones):
+  def atualizar(self, telefone, telefone_id, usuario_id):
     sql = """
     update telefones 
-    numero = ?
+    set numero = ?
     where id = ? and usuario_id = ?;
     """
 
     cursor = self.db.cursor()
     cursor.execute(sql, (
-      telefone.numero,
-      telefone.id,
-      telefone.usuario_id)
-    )
+      telefone, 
+      telefone_id, 
+      usuario_id,
+    ))
 
     self.db.commit()
 

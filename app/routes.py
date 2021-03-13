@@ -1,11 +1,8 @@
 from flask import render_template, request, url_for, redirect, session, flash
 from sqlite3.dbapi2 import Error, complete_statement
 from datetime import datetime
-from PIL import Image
-import os, hashlib
 from app import app
-
-from jinja2 import Template
+import os, hashlib
 
 from app.models.connection import get_db
 
@@ -120,6 +117,122 @@ def cadastrarUsuarios():
       return redirect(request.url)
 
   return render_template("register.html")
+
+@app.route('/atualizar-dados/', methods=['GET', 'POST',])
+def atualizarDados():
+  if( 'logado' not in session ):
+    flash('Você não possui permissão!', 'danger')
+    return redirect(url_for('login'))
+
+  controle_usuarios = UsuarioDAO(get_db())
+  controle_telefones = TelefonesDAO(get_db())
+  nome_usuario, telefone_id, telefone = controle_usuarios.obterNomeTelefone(session['logado'][0])
+  if( request.method == 'POST' ):
+    nome = request.form['nome']
+    n_telefone = request.form['telefone']
+
+    if( nome and n_telefone ):
+      novo_nome = controle_usuarios.atualizarNome(
+        nome,
+        session['logado'][0]
+      )
+      novo_telefone = controle_telefones.atualizar(
+        n_telefone,
+        telefone_id,
+        session['logado'][0]
+      )
+    
+    if( novo_nome > 0 or novo_telefone > 0 ):
+      flash('Nome e/ou telefone alterado(s) com sucesso!', 'success')
+      return redirect(url_for('produtos'))
+    else:
+      flash('Ocorreu um erro ao tentar atualizar!', 'danger')
+      return redirect(url_for('produtos'))
+
+  
+  return render_template('atualizarDados.html', nome_usuario = nome_usuario, telefone = telefone)
+
+@app.route('/atualizar-senha/', methods=['GET', 'POST',])
+def atualizarSenha():
+  if( 'logado' not in session ):
+    flash('Você não possui permissão para isso!', 'danger')
+    return redirect(url_for('index'))
+
+  if( request.method == 'POST' ):
+    email = request.form['email']
+    senha_antiga = request.form['senha']
+    nova_senha = request.form['nova_senha']
+
+    hash = hashlib.sha512()
+    hash.update(senha_antiga.encode('UTF-8'))
+    senha_antiga = hash.hexdigest()
+
+    usuario = None
+    if( email and senha_antiga and nova_senha ):
+      controle_usuarios = UsuarioDAO(get_db())
+      usuario = controle_usuarios.autenticar(
+        email,
+        senha_antiga
+      )
+    else:
+      flash('Preencha todos os campos!', 'danger')
+      return redirect(request.url)
+
+    if( usuario is not None ):
+      hash = hashlib.sha512()
+      hash.update(nova_senha.encode('UTF-8'))
+      nova_senha = hash.hexdigest()
+
+      conta = controle_usuarios.atualizarSenha(
+        nova_senha,
+        session['logado'][0]
+      )
+    else:
+      flash('E-mail e/ou senha incorretos!', 'danger')
+      return redirect(request.url)
+    
+    if( conta > 0 ):
+      flash('Senha alterada!', 'success')
+      return redirect(url_for('produtos'))
+    else:
+      flash('Não foi possível atualizar a senha, verifique os dados!')
+      return redirect(request.url)
+
+
+  return render_template('atualizarSenha.html')
+
+@app.route('/excluir-conta/', methods=['GET', 'POST',])
+def excluirConta():
+  if( 'logado' not in session ):
+    return redirect(url_for('index'))
+
+  if( request.method == 'POST' ):
+    controle_usuarios = UsuarioDAO(get_db())
+    email = request.form['email']
+    senha = request.form['senha']
+    
+    hash = hashlib.sha512()
+    hash.update(senha.encode('UTF-8'))
+    senha = hash.hexdigest()
+
+    usuario = None
+    if( email and senha ):
+      usuario = controle_usuarios.autenticar(
+        email,
+        senha
+      )
+    else:
+      flash('Preencha todos os campos!', 'danger')
+
+    if( usuario is not None ):
+      deleted = controle_usuarios.deletar(session['logado'][0])
+      flash('Conta apagada com sucesso!', 'success')
+      return redirect(url_for('index'))
+    else:
+      flash('E-mail e/ou senha incorretos!', 'danger')
+      return redirect(request.url)
+
+  return render_template('excluirConta.html')
 
 @app.route('/tirar-vendido/<produto_id>/')
 def tirarVendido(produto_id):

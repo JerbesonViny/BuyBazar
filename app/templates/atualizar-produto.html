@@ -60,6 +60,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
                   <a class="dropdown-item" href="/logout/">Sair</a>
+                  <a class="dropdown-item" href="/atualizar-dados/">Atualizar dados</a>
+                  <a class="dropdown-item" href="/atualizar-senha/">Atualizar senha</a>
+                  <a class="dropdown-item" href="/excluir-conta/">Exclusão de conta</a>
                 </div>
               </li>
             </ul>
@@ -196,20 +199,6 @@
       <script src="{{url_for('static', filename='assets/js/plugins/bootstrap-notify.js')}}"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
       <script src="{{url_for('static', filename='assets/js/material-dashboard.js')}}" type="text/javascript"></script>
-
-      <script>
-        $(document).ready(function () {
-          // Javascript method's body can be found in assets/js/demos.js
-          md.initDashboardPageCharts();
-        });
-      </script>
-
-      <script>
-        $.notify({
-          title: "Deseja atualizar algum produto?",
-          message: "Preencha os campos de atualização!"
-        });
-      </script>
 </body>
 
 </html>

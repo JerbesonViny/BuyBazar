@@ -57,19 +57,15 @@ class UsuarioDAO():
 
     return cursor.fetchall()
   
-  def atualizar(self, usuario: Usuarios):
+  def atualizarNome(self, nome, usuario_id):
     sql = """
-    update usuarios 
-    set nome = ?, log_in = ?, senha = ?
+    update usuarios
+    set nome = ?
     where id = ?;
     """
 
     cursor = self.db.cursor()
-    cursor.execute(sql, (
-      usuario.nome,
-      usuario.login,
-      usuario.senha)
-    )
+    cursor.execute(sql, (nome, usuario_id))
 
     self.db.commit()
 
@@ -88,3 +84,33 @@ class UsuarioDAO():
 
     return cursor.rowcount 
   
+  def obterNomeTelefone(self, usuario_id):
+    sql = """
+    select usuarios.nome, telefones.id, telefones.numero
+    from usuarios
+    join telefones
+    on telefones.usuario_id = usuarios.id
+    where usuarios.id = ?;
+    """
+  
+    cursor = self.db.cursor()
+    cursor.execute(sql, (usuario_id,))
+
+    return cursor.fetchone()
+
+  def atualizarSenha(self, nova_senha, usuario_id):
+    sql = """
+    update usuarios
+    set senha = ?
+    where id = ?;
+    """
+
+    cursor = self.db.cursor()
+    cursor.execute(sql, (
+      nova_senha,
+      usuario_id
+    ))
+
+    self.db.commit()
+
+    return cursor.rowcount

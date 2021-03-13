@@ -59,6 +59,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">  
                   <a class="dropdown-item" href="/logout/">Sair</a>
+                  <a class="dropdown-item" href="/atualizar-dados/">Atualizar dados</a>
+                  <a class="dropdown-item" href="/atualizar-senha/">Atualizar senha</a>
+                  <a class="dropdown-item" href="/excluir-conta/">Exclusão de conta</a>
                 </div>
               </li>
             </ul>
@@ -216,21 +219,6 @@
   
   <script src="{{url_for('static', filename='assets/js/get-modal.js')}}"></script>
   <script src="{{url_for('static', filename='assets/js/get-modal-vendido.js')}}"></script>
-
-  <script>
-    $(document).ready(function() {
-      // Javascript method's body can be found in assets/js/demos.js
-      md.initDashboardPageCharts();
-
-    });
-  </script>
-  
-  <script>
-	$.notify({
-		title: "Lista de produtos disponíveis",
-		message: "Confira os seus produtos que ainda estão no bazar!"
-	});
-	</script>
 </body>
 
 </html>
